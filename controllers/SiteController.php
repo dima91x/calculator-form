@@ -9,7 +9,7 @@ use app\models\LoginForm;
 use yii\web\Controller;
 
 
-class CalculatorController extends Controller
+class SiteController extends Controller
 {
     /**
      * Displays homepage.
