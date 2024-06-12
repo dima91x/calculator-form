@@ -2,39 +2,24 @@
 
 namespace app\controllers\Calculator;
 
+use app\controllers\Calculator\BuilderQuery\ParamsQuery;
+use app\controllers\Calculator\BuilderQuery\RoutePointType;
+
 class Price extends ObjectApi
 {
     public function getPrice( $info, string $terminal = "default") : array
     {
-        $data = [
-            "object" => "price",
-            "action" => "get",
-            "params" => [
-                "cargo" => [
-                    "dimension" => [  // габариты
-                        "quantity" => 1, // количество мест
-                        "volume" => $info["volume"] ?: 0.1, // общий объем
-                        "weight" => $info["weight"] ?: 0.1 // общий вес
-                    ]
-                ],
-                "gateway" => [
-                    "dispatch" => [   // откуда
-                        "point" => [
-                            "location" => $info["from"],
-                            "terminal" => $terminal
-                        ]
-                    ],
-                    "destination" => [  // куда
-                        "point" => [
-                            "location" => $info["to"],
-                            "terminal" => "default"
-                        ]
-                    ]
-                ]
-            ]
-        ];
+        $query = new QueryApi();
+        $query->addObject("price");
+        $query->addAction("get");
 
-        return $this->requestApi($data);
+        $params = new ParamsQuery();
+        $params->addCargoDimension($info["volume"], $info["weight"]);
+        $params->addRoutePoint(RoutePointType::Dispatch, $info["from"]);
+        $params->addRoutePoint(RoutePointType::Destination, $info["to"]);
+        $query->addParams($params);
+
+        return $this->requestApi($query->get());
 
     }
 }

@@ -9,12 +9,12 @@ class Location extends ObjectApi implements GetObjects
 
     public function getObjectsFromApi() : GetObjects
     {
-        $data = [
-            "object" => "location",
-            "action" => "get"
-        ];
+        $query = new QueryApi();
+        $query->addObject("location");
+        $query->addAction("get");
 
-        $this->data = $this->requestApi($data);
+        $this->data = $this->requestApi($query->get());
+
         return $this;
     }
 
